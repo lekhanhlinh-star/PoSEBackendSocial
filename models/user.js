@@ -27,13 +27,14 @@ const UserSchema = new mongoose.Schema(
       min: 6,
     },
     phone_number:{
-      type:Number,
+      type:String,
       required:true,
       unique:true,
   
       validate: (value) => {
-          return value.toString().length >= 9 && value.toString().length <= 10;
-      }
+        return /^\d+$/.test(value) && value.length >= 9 && value.length <= 10;
+      },
+      // message: 'Phone number must be between 9 and 10 characters.'
   },
     
     profilePicture: {

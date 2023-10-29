@@ -6,7 +6,7 @@ const UserController={
 
     create_user:async (req,res)=>{
         try{
-              console.log(req.body)
+              
               // req.boby.birth_day=new Date(req.boby.birth_day)
             
             const newUser=new User(req.body);
@@ -15,7 +15,19 @@ const UserController={
 
         }
         catch (error){
-            res.status(500).json({ error });
+         
+                if ((error["keyValue"]).hasOwnProperty("password") ||(error["keyValue"]).hasOwnProperty("birth_day") ||(error["keyValue"]).hasOwnProperty("gender")){
+                  res.status(500).json({"message":Object.keys((error["keyValue"]))+" is require"})
+                }
+                else{
+                  res.status(500).json({"message":Object.keys((error["keyValue"]))+" is require and unique"})
+                  
+
+                }
+            
+
+
+            
         }   
 
     },
@@ -66,6 +78,18 @@ const UserController={
           } catch (error) {
             res.status(500).json({ error: 'Error deleting the user' });
           }
+    },
+    get_user_by_name:async(req,res)=>{
+      try {
+        const deletedUser = await User.findOne()
+        if (!deletedUser) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+        res.status(204).send(); // No content on successful deletion
+      } catch (error) {
+        res.status(500).json({ error: 'Error deleting the user' });
+      }
+
     }
 
 }
