@@ -41,6 +41,7 @@ const UserController={
     },
     get_user_by_id:async(req,res)=>{
         try{
+            
             const user=await User.findById(req.params.id)
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });

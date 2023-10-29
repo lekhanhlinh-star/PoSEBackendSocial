@@ -13,7 +13,7 @@ const middleware={
                     if(error){
                         res.status(403).json({"message":"Token is invalid:"+error})
                     }
-                    
+                    console.log(user)
                     
                     req.user=user
                     next();
