@@ -7,6 +7,8 @@ const UserController={
     create_user:async (req,res)=>{
         try{
               console.log(req.body)
+              // req.boby.birth_day=new Date(req.boby.birth_day)
+            
             const newUser=new User(req.body);
             await newUser.save();
             res.status(201).send(newUser)

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const  validator = require('validator')
 
+const bcrypt = require('bcrypt');
 
 const UserSchema = new mongoose.Schema(
   {
@@ -16,6 +17,9 @@ const UserSchema = new mongoose.Schema(
       required: true,
       max: 50,
       unique: true,
+      validate:(value)=>{
+        return validator.isEmail(value)
+      }
     },
     password: {
       type: String,
@@ -100,5 +104,36 @@ const UserSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+UserSchema.pre("save", async function(next){
+  if(!this.isModified("password")){
+      return next()
+  }
+  try{
+      const saltRounds=10;
+      const hashedPassword= await bcrypt.hash(this.password,saltRounds);
+      this.password=hashedPassword
+      next()
+  }
+  catch (error){
+      return next(error)
+  }
+
+})
+UserSchema.pre('findOneAndUpdate', async function (next) {
+  const update = this.getUpdate();
+  if (update.password) {
+      try {
+          const saltRounds = 10;
+          const hashedPassword = await bcrypt.hash(update.password, saltRounds);
+          this.setUpdate({ ...update, password: hashedPassword });
+          next();
+      } catch (error) {
+          return next(error);
+      }
+  } else {
+      next();
+  }
+});
 
 module.exports = mongoose.model("User", UserSchema);

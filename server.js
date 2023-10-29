@@ -17,7 +17,6 @@ app.use(express.urlencoded({extended: false}))
 app.get("/", (req, res) => {
     res.send("Connected to server")
 });
-
 // use the routes
 app.use(userRoute);
 app.use(PostRoute);
