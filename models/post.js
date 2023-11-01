@@ -25,10 +25,12 @@ const blogSchema = new mongoose.Schema({
          type: String,
          required:true
       },
-      media:[{
-        type: String,
-       
-      }],
+      media:[
+        {
+        
+          filename: { type: String, required: true },
+        },
+      ],
       
       author: {
         type: mongoose.Schema.Types.ObjectId,
@@ -40,11 +42,12 @@ const blogSchema = new mongoose.Schema({
       },
     },
   ],
-  media:
+  media:[
     {
-      type: [String]
-      
+     
+      filename: { type: String, required: true },
     },
+  ],
   
   createdAt: {
     type: Date,

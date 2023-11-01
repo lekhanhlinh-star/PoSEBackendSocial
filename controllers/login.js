@@ -24,7 +24,7 @@ const login=async (req,res)=>{
     // const token = jwt.sign({ userID:  user["_id"]}, secrete_key, { expiresIn: '1h' });
     const token=jwt.sign({ email: user.email, _id: user._id}, 'RESTFULAPIs')
 
-    res.status(200).json(token);
+    res.status(200).json({user,token});
 
 
 

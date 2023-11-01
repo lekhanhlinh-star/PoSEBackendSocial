@@ -1,16 +1,33 @@
 const Post=require("../models/post")
 
 
-// create a new Post post
-
+const path = require('path');
 
 const create_new_Post=async (req,res)=>{
     try {
-        const { title, content, author, tags, media } = req.body;
-        const newPost = await Post.create({ title, content, author, tags, media });
+        const { title, content, author, tags } = req.body;
+        
+        
+        const files = req.files; // Extract the uploaded file information
+
+    // Construct the path to the image using the 'uploads' directory
+        let newPost
+
+        if (files){
+          const media = req.files.map((file) => ({ filename: file.filename }));
+          
+       
+          newPost = await Post.create({ title, content, author, tags, media });
+
+        }
+        else{
+          newPost = await Post.create({ title, content, author, tags});
+        }
+        
+        
         res.status(201).json(newPost);
       } catch (error) {
-        res.status(500).json({ error: 'Error creating a new Post post' });
+        res.status(500).json({ error: 'Error creating a new Post post '+error });
     }
 }
 const get_all_Post =async (req, res) => {
@@ -23,13 +40,15 @@ const get_all_Post =async (req, res) => {
 }
 const get_Post_by_id=async (req,res)=>{
     try {
-        const Post = await Post.findById(req.params.id);
-        if (!Post) {
+         let id= req.params.id
+         
+        const post = await Post.findOne({"_id":id})
+        if (!post) {
           return res.status(404).json({ error: 'Post post not found' });
         }
-        res.status(200).json(Post);
+        res.status(200).json(post);
       } catch (error) {
-        res.status(500).json({ error: 'Error fetching the Post post' });
+        res.status(500).json({ error: 'Error fetching the Post post '+error });
       }
        
 }
@@ -46,19 +65,18 @@ const delete_Post_by_id=async(req,res)=>{
 }
 // Update a Post post by ID
 const update_Post_by_id=async(req,res)=>{
-    try {
-        const updatedPost = await Post.findByIdAndUpdate(
-          req.params.id,
-          req.body,
-          { new: true }
-        );
-        if (!updatedPost) {
-          return res.status(404).json({ error: 'Post post not found' });
-        }
-        res.status(200).json(updatedPost);
-      } catch (error) {
-        res.status(500).json({ error: 'Error updating the Post post' });
-      }
+  try {
+    const { title, content, author, tags } = req.body;
+    const media = req.files.map((file) => file.filename); // Extract filenames from uploaded files
+
+    const blog = new Blog({ title, content, author, tags, media });
+
+    const savedBlog = await blog.save();
+    res.status(201).json(savedBlog);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+;
 }
 const getAllPostsByUser=async (req,res)=>{
   const authorId=req.params.user_id

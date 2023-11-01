@@ -49,7 +49,7 @@ const UserController={
               res.status(200).json(user);
         }
         catch (error) {
-            res.status(500).json({ error: 'Error fetching the user' });
+            res.status(500).json({ error: 'Error fetching the user '+error });
           }
         
     },
